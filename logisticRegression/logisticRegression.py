@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 # Import Autograd modules here
 from autograd import grad, numpy as anp
 import matplotlib.animation as animation
-
+from math import e
 
 class LogisticRegression():
     def __init__(self, fit_intercept=False):
@@ -15,6 +15,10 @@ class LogisticRegression():
         self.coef_ = None #Replace with numpy array or pandas series of coefficients learned using using the fit methods
 
         return
+    
+    def sigmoid(self,y_hat):
+        # return (1.0)/(1+np.exp(-np.array(y_hat,dtype=float)))
+        return (1.0)/(1+e**(-anp.array(y_hat)))
 
     def fit_non_vectorised(self, X, y, batch_size, n_iter=10, lr=0.01, lr_type='constant'):
         '''
@@ -44,7 +48,7 @@ class LogisticRegression():
         ybatches = [y.iloc[i*batch_size:(i+1)*batch_size] for i in range(n_batches)]
         
         # Initializing with all Thetas = 0
-        THETA = np.array([0]*len(X.columns)).T 
+        THETA = np.array([0.0]*len(X.columns)).T 
         
         for i in range(n_iter):
             if(lr_type=='inverse'):
@@ -53,64 +57,26 @@ class LogisticRegression():
             theta_old = THETA.copy() # Copy is necessary here!
             for j in range(len(X.columns)):
                 # For each feature
-                dMSE = 0 # Gradient
+                dCrossE = 0 # Gradient
                 for k in range(batch_size):
                     y_hat = 0
                     for l in range(len(X.columns)):
                         y_hat += theta_old[l]*(X_train.iloc[k,l]) # y = x0 + x1*theta1 ....
-                    dMSE += (y_hat - y_train.iloc[k])*X_train.iloc[k,j] # err: (y_hat-y)
+                    dCrossE += (self.sigmoid(y_hat) - y_train.iloc[k])*X_train.iloc[k,j] # err: (y_hat-y)
                 
                 # THETA UPDATED!
-                THETA[j] = theta_old[j] - (lr/batch_size)*dMSE     
+                THETA[j] = theta_old[j] - (lr/batch_size)*dCrossE     
         self.coef_= THETA
-
         return
 
-    def fit_vectorised(self, X, y,batch_size, n_iter=10, lr=0.01, lr_type='constant'):
-        '''
-        Function to train model using vectorised gradient descent.
-
-        :param X: pd.DataFrame with rows as samples and columns as features (shape: (n_samples, n_features))
-        :param y: pd.Series with rows corresponding to output (shape: (n_samples,))
-        :param batch_size: int specifying the batch size. Batch size can only be between 1 and number of samples in data.
-        :param n_iter: number of iterations (default: 100)
-        :param lr: learning rate (default: 0.01)
-        :param lr_type: If lr_type = 'constant', then the learning rate remains constant,
-                        if lr_type = 'inverse', then learning rate = lr / t, where t = current iteration number
-
-        :return None
-        '''
-        #______ VECTORISED FITTING _______#
-        N = len(X)
-        self.n_iter = n_iter
-        n_batches = N//batch_size
-        LR = lr
-        if(self.fit_intercept):
-            #______ ADD 1s column if fitting intercept _______#
-            X = pd.concat([pd.Series([1]*N),X],axis=1, ignore_index=True)
-
-        # Dividing into batches
-        Xbatches = [X.iloc[i*batch_size:(i+1)*batch_size] for i in range(n_batches)]
-        ybatches = [y.iloc[i*batch_size:(i+1)*batch_size] for i in range(n_batches)]
-
-        # Initializing with all Thetas = 0
-        THETA = np.array([0]*len(X.columns)).T
-        
-        for i in range(n_iter):
-            if(lr_type=='inverse'):
-                lr = LR/(i+1)
-            X_train, y_train = Xbatches[i%n_batches], ybatches[i%n_batches]
-            y_hat = X_train.dot(THETA) # y_hat = X0 
-            THETA = THETA - (lr/batch_size)* X_train.T.dot(y_hat - y_train) # 0 = 0 - alpha.X*.(X0 - y)
-        self.coef_= THETA
-
-        return
-
-    def mse_function(self,THETA):
+    def CrossE_function(self,THETA):
         # Helper function for autograd calculations
-        y_hat = self.X.dot(THETA)
-        MSE = anp.sum(anp.square(anp.subtract(y_hat, self.y)))/len(self.y)
-        return MSE
+        y_hat = self.sigmoid(anp.dot(np.array(self.X),THETA))
+        T1 =  -anp.dot(self.y.T,anp.log(y_hat))
+        T2 = -anp.dot((anp.ones(self.y.shape)-self.y).T,anp.log(anp.ones(self.y.shape)-y_hat))
+        CrossE = anp.sum(T1 + T2)
+        # MSE = anp.sum(anp.square(anp.subtract(y_hat, self.y)))/len(self.y)
+        return CrossE
 
     def fit_autograd(self, X, y, batch_size, n_iter=10, lr=0.01, lr_type='constant'):
         '''
@@ -152,9 +118,9 @@ class LogisticRegression():
             self.y = y_train
             
             # Gradient calculation using Autograd
-            dMSE_constructor =  grad(self.mse_function)
-            dMSE = dMSE_constructor(THETA)          
-            THETA = THETA - (lr/batch_size)* dMSE # 0 = 0 - alpha.(GRAD)/btach_size
+            dCrossE_constructor =  grad(self.CrossE_function)
+            dCrossE = dCrossE_constructor(THETA)          
+            THETA = THETA - (lr/batch_size)* dCrossE # 0 = 0 - alpha.(GRAD)/batch_size
         self.coef_= THETA
 
 
@@ -184,7 +150,9 @@ class LogisticRegression():
         if(self.fit_intercept):
             X = pd.concat([pd.Series([1]*len(X)),X],axis=1, ignore_index=True)
         y_hat = pd.Series(X.dot(self.coef_))
-        
+        y_hat[y_hat<0] = 0
+        y_hat[y_hat>0] = 1
+        print(list(y_hat))
         return y_hat
 
     def RSS(self, t_0, t_1):
