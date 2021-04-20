@@ -51,7 +51,7 @@ size = len(data)//FOLDS
 Xfolds = [data.iloc[i*size:(i+1)*size].iloc[:,:-1] for i in range(FOLDS)]
 yfolds = [data.iloc[i*size:(i+1)*size].iloc[:,-1] for i in range(FOLDS)]
 cross_val_folds = 3
-lamda_range  = [0,0.0001,0.001,0.01,0.1,1,10,40]
+lamda_range  = [0,0.0001,0.001,0.01,0.1,1,10]
 
 for reg_type in ["l1","l2"]:
     Optimals = []
@@ -107,35 +107,4 @@ for reg_type in ["l1","l2"]:
             
     print("The optimal lamdas for each folds are ", Optimals)
 
-# X, y = load_breast_cancer(return_X_y=True,as_frame=True)
-# X = (X - X.min( )) / (X.max( ) - X.min( ))
-# data = pd.concat([X, y.rename("y")],axis=1, ignore_index=True)
-# data = data.sample(frac=1).reset_index(drop=True) # RANDOMLY SHUFFLING THE DATASET
-# FOLDS = 3
-# size = len(data)//FOLDS
-# #__________ 3 folds created ____________#
-# Xfolds = [data.iloc[i*size:(i+1)*size].iloc[:,:-1] for i in range(FOLDS)]
-# yfolds = [data.iloc[i*size:(i+1)*size].iloc[:,-1] for i in range(FOLDS)]
-# avg_accuracy = 0
-# for i in range(FOLDS):
-#     print("Test_fold = {}".format(i+1))
-#     Xdash, ydash = Xfolds.copy(), yfolds.copy()
-#     #__________ Use one of them as Test fold ____________#
-#     X_test, y_test = Xdash[i], ydash[i]
-#     Xdash.pop(i)
-#     ydash.pop(i)
-#     #__________ Concat the rest to create the Train fold ____________#
-#     X_train,y_train = pd.concat(Xdash), pd.concat(ydash)
-#     LR = LogisticRegression(fit_intercept=True)
-#     LR.fit_autograd(X_train, y_train, n_iter=1000,batch_size = 20,lr = 3, lr_type="inverse")
-#     # LR.plot_desicion_boundary(X_train,y_train)
-#     y_hat = LR.predict(X_test)
-#     test_accuracy = accuracy(y_hat,y_test.reset_index(drop=True))
-#     print("\t Test_Accuracy: {}".format(test_accuracy))
-#     avg_accuracy += test_accuracy
-
-# avg_accuracy = avg_accuracy/FOLDS
-# print("AVERAGE ACCURACY = {}".format(avg_accuracy))
-
-# D) Done Above!
 

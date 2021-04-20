@@ -6,6 +6,7 @@ from autograd import grad, numpy as anp
 import matplotlib.animation as animation
 from math import e
 
+
 class LogisticRegression():
     def __init__(self, fit_intercept=True):
         '''
@@ -181,10 +182,12 @@ class LogisticRegression():
         return P[:,k] / anp.sum(P,axis=1)
 
     def CrossE_multi(self, THETA):
-        P = anp.exp(anp.dot(np.array(self.X),THETA)) / anp.sum(P,axis=1).reshape(-1,1)
+        P = anp.exp(anp.dot(np.array(self.X),THETA)) 
+        P /= anp.sum(P,axis=1).reshape(-1,1)
         CrossE = 0
         for k in self.classes:
-            CrossE -= anp.dot((self.y == k).astype(float),anp.log(P[:,k]))
+            CrossE -= anp.dot((self.y == k).astype(float),anp.log(P[:,k]))        
+            
         return CrossE
 
     def fit_multi(self, X, y, batch_size, n_iter=10, lr=0.01, lr_type='constant', reg_type = "", classes = None):

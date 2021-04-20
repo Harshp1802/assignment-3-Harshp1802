@@ -79,7 +79,10 @@ def rmse(y_hat, y):
     """
 
     assert(y_hat.size == y.size)
-    y_hat = pd.Series(y_hat)
+    try:
+        y_hat = pd.Series(y_hat)
+    except:
+        y_hat = pd.Series(y_hat.flatten())
     y, y_hat = y.reset_index(drop = True), y_hat.reset_index(drop = True)
     return np.sqrt(np.square(np.subtract(y_hat,y)).mean())
 
