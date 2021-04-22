@@ -6,7 +6,7 @@
 
 > Time Complexity Analysis of Logistic Regression 
 1) Learning/ Training:
-    + The overall time complexity of this step is *O(M * n_iter)*
+    + The overall time complexity of this step is *O(M * N * n_iter)*
     + Gradient Descent Step!
 
 2) Predicting:
