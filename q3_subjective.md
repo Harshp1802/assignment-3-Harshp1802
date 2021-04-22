@@ -40,7 +40,7 @@ AVERAGE ACCURACY = 0.9086859688195991
 
 ### - Here we observe that in the confusion matrix **1 & 8** and **1 & 9** are the most confusing digits as they have the maximum misclassifications (4) of each other!
 
-### - We also observe that the digit 0 is the easiet to predict as it has the minimum no. of missclassified entries. [See the diagonal]. Digit is the toughest to predict!
+### - We also observe that the digit 0 is the easiet to predict as it has the minimum no. of missclassified entries. [See the diagonal]. Digit 8 is the toughest to predict!
 
 ## -------- Principal Component Analysis (PCA) for DIGITS --------
 
