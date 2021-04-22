@@ -6,20 +6,21 @@
 
 > Time Complexity Analysis of Logistic Regression 
 1) Learning/ Training:
-    + The overall time complexity of this step is *O(M * N * n_iter)*
+    + The overall time complexity of this step is *O(M * N * n_iter * k)*
     + Gradient Descent Step!
+    + Loss for each of the k-classes!
 
 2) Predicting:
-    + The overall time complexity of this step is *O(M)*
-    + Multiplication with weight matrix!
+    + The overall time complexity of this step is *O(M * N * k)*
+    + Multiplication with weight matrix! [N * M x M * K]
 
-> Space Complexity Analysis of Logistic Regression 
+> Space Complexity Analysis of Logistic Regression
 1) Learning/ Training:
-    + The overall space complexity of this step is *O(M * N) + O(N) + O(M))*
+    + The overall space complexity of this step is *O(M * N) + O(N * k) + O(M * k)*
     + X, y, Weight Matrix
 
 2) Predicting:
-    + The overall space complexity of this step is *O(M))*
+    + The overall space complexity of this step is *O(M * k)*
     + We just need the Weight Matrix to predict the outputs
 
 where t -> No. of iterations
