@@ -5,53 +5,45 @@ from logisticRegression.logisticRegression import LogisticRegression
 from sklearn.linear_model import LogisticRegression as LLR
 from metrics import *
 from sklearn.datasets import load_breast_cancer
+from tqdm import trange
+import tqdm
 
 np.random.seed(42)
 
-# A)
+#--------- Random 2-class Dataset for testing purpose-------- #
+
 # N = 10
 # P = 2
 # X = pd.DataFrame(np.random.randn(N, P))
 # X = (X - X.min( )) / (X.max( ) - X.min( ))
 # y = pd.Series(np.random.randint(2,size=N))
+# fit_intercept = True
 
-# for fit_intercept in [True]:
+# a) --------- Regularised Logistic Regression: implemented in LogisticRegression.py --------#
 
+# for reg_type in ["l1","l2"]:
+#     print(f"\n|--------- {reg_type} Regularised Logistic Regression using Autograd ----------|")
 #     LR = LogisticRegression(fit_intercept=fit_intercept)
-#     LR.fit_autograd(X, y, n_iter=100,batch_size = 5,lr = 2, reg_type = "l2") # here you can use fit_non_vectorised / fit_autograd methods
-#     # LR.fit_autograd(X, y, n_iter=1000,batch_size = 10,lr = 0.0001)
+#     LR.fit_autograd(X, y, n_iter=100,batch_size=5,lr = 2,reg_type=reg_type)
 #     y_hat = LR.predict(X)
-#     # print("THETA:", LR.coef_)
+#     print("Obtained THETA values:", LR.coef_)
 #     print('Accuracy: ', accuracy(y_hat, y))
-#     LR.plot_desicion_boundary(X,y)
+#     LR.plot_desicion_boundary(X,y,f"./q2_plots/db_{reg_type}_regularised.jpg")
+#     print(f"Desicion Boundary plot at ./q1_plots/db_{reg_type}_regularised.jpg")
 
-# model = LLR(fit_intercept = True, penalty="none", max_iter=515)
-# model.fit(X, y)
-# print(model.predict(X))
-# print(model.intercept_, model.coef_)
-# print(model.score(X, y))
-
-# C)
-from sklearn.datasets import make_classification
-
-X, y = make_classification(n_features=2, random_state=444,n_redundant=0)
-X = pd.DataFrame(X)
-y = pd.Series(y)
-# N = 30
-# P = 2
-# X = pd.DataFrame(np.random.randn(N, P))
-# y = pd.Series(np.random.randint(2,size=N))
-
-
+# b) --------- Using nested cross-validation to find Optimal lambda ---------#
+print("\n|--------- Nested cross-validation for finding Optimal lambda values ----------|")
+X, y = load_breast_cancer(return_X_y=True,as_frame=True)
 X = (X - X.min( )) / (X.max( ) - X.min( ))
 data = pd.concat([X, y.rename("y")],axis=1, ignore_index=True)
+data = data.sample(frac=1).reset_index(drop=True) # RANDOMLY SHUFFLING THE DATASET
 FOLDS = 3
 size = len(data)//FOLDS
 #__________ 5 folds created ____________#
 Xfolds = [data.iloc[i*size:(i+1)*size].iloc[:,:-1] for i in range(FOLDS)]
 yfolds = [data.iloc[i*size:(i+1)*size].iloc[:,-1] for i in range(FOLDS)]
 cross_val_folds = 3
-lamda_range  = [0,0.0001,0.001,0.01,0.1,1,10]
+lamda_range  = list(range(1,5))#[0,0.0001,0.001,0.01,0.1,1,10]
 
 for reg_type in ["l1","l2"]:
     Optimals = []
@@ -85,9 +77,9 @@ for reg_type in ["l1","l2"]:
                 #__________ Concat the rest to create the nested Train Fold ____________#
                 train_X, train_y =  pd.concat(X_traindash), pd.concat(y_traindash)            
                 LR = LogisticRegression()
-                LR.fit_autograd(train_X.reset_index(drop=True), train_y.reset_index(drop=True), n_iter=100,batch_size = len(train_X),lr = 3, reg_type = reg_type, lamda=lamda)
+                LR.fit_autograd(train_X.reset_index(drop=True), train_y.reset_index(drop=True), n_iter=200,batch_size = len(train_X),lr = 0.5, reg_type = reg_type, lamda=lamda)
                 y_hat = LR.predict(X_valid.reset_index(drop=True))
-                # LR.plot_desicion_boundary(X_valid,y_valid)
+                # LR.plot_desicion_boundary(X_valid,y_valid, None)
                 valid_accuracy = accuracy(y_hat,y_valid.reset_index(drop=True))
                 print("Accuracy:  {}".format(valid_accuracy))
                 avg_validation_accuracy += valid_accuracy
@@ -107,4 +99,26 @@ for reg_type in ["l1","l2"]:
             
     print("The optimal lamdas for each folds are ", Optimals)
 
+# b) --------- Feature Selection using L1 Regularisation ---------#
+
+print("\n|--------- Feature Selection using L1 Regularisation ----------|")
+THETAS = []
+lamdas = list(np.arange(0.0, 30, 0.1))
+
+for lamda in tqdm.tqdm(lamdas):
+    LR = LogisticRegression(fit_intercept=False)
+    LR.fit_autograd(X, y, n_iter=100, lr = 0.5, batch_size=len(X), reg_type="l1", lamda = lamda)
+    THETAS.append(np.array(LR.coef_))
+THETAS = np.array(THETAS)
+
+for col in range(10):
+    plt.plot(lamdas,THETAS[:,col],label=X.columns[col])
+
+plt.xlabel('LAMDA') 
+plt.ylabel('THETA') 
+plt.title('Feature Selection using L1 Regularisation') 
+plt.legend()
+plt.savefig("./q2_plots/feature_selection_l1.jpg")
+# plt.show()
+print("See the plot at ./q2_plots/feature_selection_l1.jpg ")
 
