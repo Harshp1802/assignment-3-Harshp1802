@@ -19,7 +19,7 @@ Obtained THETA values: [ 1.22543988  1.65893187 -4.5332299 ]
 Accuracy:  0.8
 ```
 <p align = center>
-<img src = "./q1_plots/db_non_vectorised.jpg" >
+<img src = ".\q1_plots\db_non_vectorised.jpg" >
 </p>
 
 ## |--------- Unregularised Logistic Regression using Autograd ----------|
@@ -29,7 +29,7 @@ Obtained THETA values: [ 1.21784697  1.66523405 -4.52000176]
 Accuracy_autograd:  0.8
 ```
 <p align = center>
-<img src = "./q1_plots/db_autograd.jpg" >
+<img src = ".\q1_plots\db_autograd.jpg" >
 </p>
 
 ## |--------- 3-Fold Unregularised Logistic Regression on Breast Cancer Dataset ----------|

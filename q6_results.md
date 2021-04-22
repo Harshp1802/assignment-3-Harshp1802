@@ -15,13 +15,13 @@
 ### DIGITS Dataset:
 
 <p align = center>
-<img src = " ./q6_plots/digits_training.jpg" >
+<img src = " .\q6_plots\digits_training.jpg" >
 </p>
 
 ### BOSTON Dataset:
 
 <p align = center>
-<img src = " ./q6_plots/boston_training.jpg" >
+<img src = " .\q6_plots\boston_training.jpg" >
 </p>
 
 ##                    |--------- 3-Fold NN CLassification on DIGITS Dataset ----------|

@@ -35,7 +35,7 @@ AVERAGE ACCURACY = 0.9086859688195991
 ## -------- Best Confusion Matrix --------
 
 <p align = center>
-<img src = " ./q3_confusion_matrix.jpg" >
+<img src = " .\q3_confusion_matrix.jpg" >
 </p>
 
 ### - Here we observe that in the confusion matrix **1 & 8** and **1 & 9** are the most confusing digits as they have the maximum misclassifications (4) of each other!
@@ -45,7 +45,7 @@ AVERAGE ACCURACY = 0.9086859688195991
 ## -------- Principal Component Analysis (PCA) for DIGITS --------
 
 <p align = center>
-<img src = " ./PCA_DIGITS.jpg" >
+<img src = " .\PCA_DIGITS.jpg" >
 </p>
 
 ### From this PCA plot we can infer that:

@@ -158,7 +158,7 @@ The optimal lamdas for each folds are  [1, 2, 1]
 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 300/300 [00:58<00:00,  5.09it/s] 
 ```
 <p align = center>
-<img src = " ./q2_plots/feature_selection_l1.jpg" >
+<img src = " .\q2_plots\feature_selection_l1.jpg" >
 </p>
 
 ### Here we observe that coefficients for features like mean fractal dimension and mean fractal point become zero at highere values of lambda, implying that those features are quite important than others for the output!
