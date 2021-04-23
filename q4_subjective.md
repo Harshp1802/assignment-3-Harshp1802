@@ -4,7 +4,7 @@
 
 ------
 
-> Time Complexity Analysis of Logistic Regression 
+> Time Complexity Analysis of k-class Logistic Regression 
 1) Learning/ Training:
     + The overall time complexity of this step is *O(M * N * n_iter * k)*
     + Gradient Descent Step!
@@ -14,14 +14,15 @@
     + The overall time complexity of this step is *O(M * N * k)*
     + Multiplication with weight matrix! [N * M x M * K]
 
-> Space Complexity Analysis of Logistic Regression
+> Space Complexity Analysis of k-class Logistic Regression
 1) Learning/ Training:
     + The overall space complexity of this step is *O(M * N) + O(N * k) + O(M * k)*
     + X, y, Weight Matrix
 
 2) Predicting:
-    + The overall space complexity of this step is *O(M * k)*
-    + We just need the Weight Matrix to predict the outputs
+    + The overall space complexity of this step is *O(M * k) + O(N * k)*
+    + We just need the Weight Matrix to predict the outputs...
+    + The output size is O(N * k)*! Assuming that input data is not considered in the space complexity of this step!
 
 where t -> No. of iterations
 N -> No. of Samples
@@ -39,7 +40,7 @@ M -> No. of Features
 <img src = ".\q4_plots\Varying_N.png" >
 </p>
 
-- Here we see that the Logistic regression while training takes a linear curve w.r.t to the no. of samples whereas the prediction time is almost constant with fixed M, n_iter.
+- Here we see that the Logistic regression while training takes a linear curve w.r.t to the no. of samples with fixed M, n_iter.
 
 > Time taken vs n_iter (No.of Iterations):
 <p align = center>
